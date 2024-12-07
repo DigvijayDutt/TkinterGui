@@ -2,6 +2,7 @@ import tkinter
 from tkinter import ttk
 from tkinter import messagebox
 import tkinter.messagebox
+import sqlite3
 
 def enter_data():
     tc = terms_status.get()
@@ -15,6 +16,18 @@ def enter_data():
             course = numc_box.get()
             sem = sem_box.get()
             reg = reg_status.get()
+
+            conn = sqlite3.connect('data.db')
+            table_create = '''CREATE TABLE IF NOT EXISTS Student_data(
+            firstname TEXT, lastname TEXT, title TEXT, age INT, nationality TEXT, reg TEXT, course INT, semester INT
+            )'''
+            conn.execute(table_create)
+            data_insert = '''INSERT INTO Student_data(firstname, lastname, title, age, nationality, reg, course, semester) VALUES(?,?,?,?,?,?,?,?)'''
+            data_insert_tup =(firstname,lastname,title,age,nationality,reg,course,sem)
+            cursor = conn.cursor()
+            cursor.execute(data_insert,data_insert_tup)
+            conn.commit()
+            conn.close()
         else:
             tkinter.messagebox.showwarning(title="Error", message="First and Last Names are required.")
     else:
